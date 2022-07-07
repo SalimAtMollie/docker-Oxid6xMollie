@@ -19,7 +19,7 @@ RUN docker-php-ext-configure gd --with-jpeg && \
 
 # composer stuff
 RUN php -r 'readfile("https://getcomposer.org/installer");' > composer-setup.php \
-  && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
+  && php composer-setup.php --version=2.2.14 --install-dir=/usr/local/bin --filename=composer \
   && rm -f composer-setup.php \
   && chown www-data:www-data /var/www
 

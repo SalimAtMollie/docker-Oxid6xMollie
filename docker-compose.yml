@@ -2,6 +2,23 @@ version: '3'
 
 services:
 
+  traefik:
+    image: "traefik:v2.7"
+    container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - traefik-public
+
   oxid6_apache:
     build: container/apache/.
     hostname: ${DOMAIN}
@@ -18,11 +35,18 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    ports:
-      - ${APACHE_PORT}:80
-      - ${APACHE_HTTPS_PORT}:443
+    #ports:
+      #- ${APACHE_PORT}:80
+      #- ${APACHE_HTTPS_PORT}:443
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.oxid6_apache.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.oxid6_apache.entrypoints=web"
+      - "traefik.http.services.oxid6_apache.loadbalancer.server.port=80"
     links:
       - oxid6_mailhog:mail.server
+    networks:
+      - traefik-public
       
   oxid6_mysql:
     platform: 'linux/x86_64'
@@ -36,16 +60,41 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    labels:
+      - "traefik.enable=false"    
+    networks:
+      - traefik-public
 
   oxid6_mailhog:
     hostname: mailhog.${DOMAIN}
     image: mailhog/mailhog:latest
-    ports:
-      - ${MAILHOG_PORT}:8025
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.oxid6_mailhog.rule=Host(`mailhog.${DOMAIN}`)"
+      - "traefik.http.routers.oxid6_mailhog.entrypoints=web"
+      - "traefik.http.routers.oxid6_mailhog.tls=true"
+      - "traefik.http.routers.oxid6_mailhog.service=lb-oxid6_mailhog"
+      - "traefik.http.services.lb-oxid6_mailhog.loadbalancer.server.port=8025"
+      - "traefik.docker.network=traefik-public"
+    networks:
+      - traefik-public
 
   oxid6_phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
-    ports:
-      - ${PHPMYADMIN_PORT}:80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.oxid6_phpmyadmin.rule=Host(`myphpadmin.${DOMAIN}`)"
+      - "traefik.http.routers.oxid6_phpmyadmin.entrypoints=web"
+      - "traefik.http.routers.oxid6_phpmyadmin.tls=true"
+      - "traefik.http.routers.oxid6_phpmyadmin.service=lb-oxid6_phpmyadmin"
+      - "traefik.http.services.lb-oxid6_phpmyadmin.loadbalancer.server.port=80"
+      - "traefik.docker.network=traefik-public"
     environment:
       PMA_HOST: oxid6_mysql
+    networks:
+      - traefik-public
+
+networks:
+    traefik-public:
+        external: true
+        name: traefik-public
