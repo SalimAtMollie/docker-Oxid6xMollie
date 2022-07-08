@@ -4,7 +4,7 @@ set -e
 #Install Oxid and the Mollie plugin using composer
 if [ ! -f /var/www/html/source/config.inc.php ]
 then
-	COMPOSER_MEMORY_LIMIT=-1 composer create-project --keep-vcs oxid-esales/oxideshop-project . ${OXID_VERSION}
+	COMPOSER_MEMORY_LIMIT=-1 composer create-project --no-dev --keep-vcs oxid-esales/oxideshop-project . ${OXID_VERSION}
 	composer config --no-plugins allow-plugins.oxid-esales/oxideshop-unified-namespace-generator true #Required for Composer
 	composer config --no-plugins allow-plugins.oxid-esales/oxideshop-composer-plugin true #Required for Composer
 	composer require mollie/mollie-oxid #Installs Mollie
