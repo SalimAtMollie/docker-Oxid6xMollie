@@ -14,7 +14,7 @@ then
 	echo "############################################################################"
 	echo "##### Installation Complete! Please activate Mollie in Extensions Page #####"
 	echo "############################################################################"
-	echo "[!] Website Url 		: ${DOMAIN}"
+	echo "[!] Website Url 	    : ${DOMAIN}"
 	echo "[!] Website Admin Url : ${DOMAIN}/admin"
 	echo "[!] Admin Credentials : admin (Password: admin)"
 fi
