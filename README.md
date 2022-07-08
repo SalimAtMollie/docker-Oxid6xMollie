@@ -1,7 +1,7 @@
 <h1 align="center">
   <img alt="mollie Oxid logo" src="./Oxid6xMollie.png" width="224px"/><br/>
   Docker container with Oxid (including Mollie plugin)
-</h1>https://github.com/SalimAtMollie/docker-Oxid6xMollie/blob/[branch]/image.jpg?raw=true)
+</h1>
 <p align="center">Create a new test-ready Oxid webshop with <b>database</b> (MySql), <b>frontend</b> (PHP)<br/>and <b>email testing</b> (MailHog) by running a few CLI commands.
 
 ## 🐳 Docker-way to ⚡️ Quick start
