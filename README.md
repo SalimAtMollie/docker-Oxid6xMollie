@@ -28,7 +28,7 @@ docker-compose up --build
 
 That's all you need to do to start! 🎉
 
-> 🔔 Please note: Once the **installation is complete**, you will have to `add the live/test keys` in the Mollie plugin settings and `activate it`.
+> 🔔 Please note: Once the **installation is complete**, you will have to **add the live/test keys** in the Mollie plugin settings and **activate it**.
 
 ## ⚙️ .env Options
 
